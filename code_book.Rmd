@@ -1,0 +1,166 @@
+---
+title: "code book"
+output: html_document
+---
+
+The original variable names for the measurements were obtained from the "features.txt" files. This 561 long list was reduced to 66 by selecting the variables of interest using the grepl function. 
+
+corresponding R code segment:
+-----
+vnames <- features[grepl("mean\\(\\)|std\\(\\)", features)]
+keep <- c("subject", "activityNum", as.character(vnames))
+-----
+
+and result:
+-----
+> vnames 
+ [1] tBodyAcc-mean()-X           tBodyAcc-mean()-Y          
+ [3] tBodyAcc-mean()-Z           tBodyAcc-std()-X           
+ [5] tBodyAcc-std()-Y            tBodyAcc-std()-Z           
+ [7] tGravityAcc-mean()-X        tGravityAcc-mean()-Y       
+ [9] tGravityAcc-mean()-Z        tGravityAcc-std()-X        
+[11] tGravityAcc-std()-Y         tGravityAcc-std()-Z        
+[13] tBodyAccJerk-mean()-X       tBodyAccJerk-mean()-Y      
+[15] tBodyAccJerk-mean()-Z       tBodyAccJerk-std()-X       
+[17] tBodyAccJerk-std()-Y        tBodyAccJerk-std()-Z       
+[19] tBodyGyro-mean()-X          tBodyGyro-mean()-Y         
+[21] tBodyGyro-mean()-Z          tBodyGyro-std()-X          
+[23] tBodyGyro-std()-Y           tBodyGyro-std()-Z          
+[25] tBodyGyroJerk-mean()-X      tBodyGyroJerk-mean()-Y     
+[27] tBodyGyroJerk-mean()-Z      tBodyGyroJerk-std()-X      
+[29] tBodyGyroJerk-std()-Y       tBodyGyroJerk-std()-Z      
+[31] tBodyAccMag-mean()          tBodyAccMag-std()          
+[33] tGravityAccMag-mean()       tGravityAccMag-std()       
+[35] tBodyAccJerkMag-mean()      tBodyAccJerkMag-std()      
+[37] tBodyGyroMag-mean()         tBodyGyroMag-std()         
+[39] tBodyGyroJerkMag-mean()     tBodyGyroJerkMag-std()     
+[41] fBodyAcc-mean()-X           fBodyAcc-mean()-Y          
+[43] fBodyAcc-mean()-Z           fBodyAcc-std()-X           
+[45] fBodyAcc-std()-Y            fBodyAcc-std()-Z           
+[47] fBodyAccJerk-mean()-X       fBodyAccJerk-mean()-Y      
+[49] fBodyAccJerk-mean()-Z       fBodyAccJerk-std()-X       
+[51] fBodyAccJerk-std()-Y        fBodyAccJerk-std()-Z       
+[53] fBodyGyro-mean()-X          fBodyGyro-mean()-Y         
+[55] fBodyGyro-mean()-Z          fBodyGyro-std()-X          
+[57] fBodyGyro-std()-Y           fBodyGyro-std()-Z          
+[59] fBodyAccMag-mean()          fBodyAccMag-std()          
+[61] fBodyBodyAccJerkMag-mean()  fBodyBodyAccJerkMag-std()  
+[63] fBodyBodyGyroMag-mean()     fBodyBodyGyroMag-std()     
+[65] fBodyBodyGyroJerkMag-mean() fBodyBodyGyroJerkMag-std() 
+-----
+
+The following conventions were used to generate descriptive name
+
+The -Y, -X, -Z sting-end coordinates of movements were renamed as Vertical (i.e. up and down), Lateral (i.e. left and right), and Antero-Posterior (i.e. foreward and backward) Aspects of the movements according to the three planes of the human body.
+
+std and mean relabeled to StdDev and Mean
+
+the t and f front-end substrings were renamed as Time and Frequency domain
+
+the substrings Mag, Jerk, Gyro, Acc were translated into Size, Jolt,  Orientation and Acceleration
+
+Body was kept as Body and BodyBody was cahnged to Body
+
+the following descriptors subject, activity and activity index were used to describe the factor variables  adding to a total of 69 descriptive names
+
+parentheses were removed hyphens were removed or kept whereever felt appropriate, commas were introduced to separate the new descriptor strings
+
+corresponding R code segment:
+-----
+for (i in 1:length(v.L)) 
+{
+  v.L[i] = gsub("\\()","",v.L[i])
+  v.L[i] = gsub("\\-","\\,",v.L[i])
+  v.L[i] = gsub("Y$", " Vertical Aspect", v.L[i])
+  v.L[i] = gsub("X$", " Lateral Aspect", v.L[i])
+  v.L[i] = gsub("Z$", " Antero-Posterior Aspect", v.L[i])
+  v.L[i] = gsub("std"," StdDev",v.L[i])
+  v.L[i] = gsub("mean"," Mean",v.L[i])
+  v.L[i] = gsub("^(t)","Time domain: ",v.L[i])
+  v.L[i] = gsub("^(f)","Frequency domain: ",v.L[i])
+  v.L[i] = gsub("Mag"," Size",v.L[i])
+  v.L[i] = gsub("Jerk"," Jolt",v.L[i])
+  v.L[i] = gsub("Gyro"," Orientation",v.L[i])
+  v.L[i] = gsub("Gravity"," Gravity component of",v.L[i])
+  v.L[i] = gsub("Acc"," Acceleration",v.L[i])
+  v.L[i] = sub("BodyBody"," Body",v.L[i])
+  v.L[i] = gsub("Antero,Posterior","Antero-Posterior",v.L[i])
+  v.L[i] = gsub("Time,domain","Time domain",v.L[i])
+}
+-----
+
+The following is the full list of descriptive variable names:
+-----
+> colnames(tidyDT)
+
+ [1] "subject"                                                                         
+ [2] "activity"                                                                        
+ [3] "activity index"                                                                  
+ [4] "Time domain: Body Acceleration, Mean, Lateral Aspect"                            
+ [5] "Time domain: Body Acceleration, Mean, Vertical Aspect"                           
+ [6] "Time domain: Body Acceleration, Mean, Antero-Posterior Aspect"                   
+ [7] "Time domain: Body Acceleration, StdDev, Lateral Aspect"                          
+ [8] "Time domain: Body Acceleration, StdDev, Vertical Aspect"                         
+ [9] "Time domain: Body Acceleration, StdDev, Antero-Posterior Aspect"                 
+[10] "Time domain:  Gravity component of Acceleration, Mean, Lateral Aspect"           
+[11] "Time domain:  Gravity component of Acceleration, Mean, Vertical Aspect"          
+[12] "Time domain:  Gravity component of Acceleration, Mean, Antero-Posterior Aspect"  
+[13] "Time domain:  Gravity component of Acceleration, StdDev, Lateral Aspect"         
+[14] "Time domain:  Gravity component of Acceleration, StdDev, Vertical Aspect"        
+[15] "Time domain:  Gravity component of Acceleration, StdDev, Antero-Posterior Aspect"
+
+[16] "Time domain: Body Acceleration Jolt, Mean, Lateral Aspect"                       
+[17] "Time domain: Body Acceleration Jolt, Mean, Vertical Aspect"                      
+[18] "Time domain: Body Acceleration Jolt, Mean, Antero-Posterior Aspect"              
+[19] "Time domain: Body Acceleration Jolt, StdDev, Lateral Aspect"                     
+[20] "Time domain: Body Acceleration Jolt, StdDev, Vertical Aspect"                    
+[21] "Time domain: Body Acceleration Jolt, StdDev, Antero-Posterior Aspect"            
+[22] "Time domain: Body Orientation, Mean, Lateral Aspect"                             
+[23] "Time domain: Body Orientation, Mean, Vertical Aspect"                            
+[24] "Time domain: Body Orientation, Mean, Antero-Posterior Aspect"                    
+[25] "Time domain: Body Orientation, StdDev, Lateral Aspect"                           
+[26] "Time domain: Body Orientation, StdDev, Vertical Aspect"                          
+[27] "Time domain: Body Orientation, StdDev, Antero-Posterior Aspect"                  
+[28] "Time domain: Body Orientation Jolt, Mean, Lateral Aspect"                        
+[29] "Time domain: Body Orientation Jolt, Mean, Vertical Aspect"                       
+[30] "Time domain: Body Orientation Jolt, Mean, Antero-Posterior Aspect"               
+[31] "Time domain: Body Orientation Jolt, StdDev, Lateral Aspect"                      
+[32] "Time domain: Body Orientation Jolt, StdDev, Vertical Aspect"                     
+[33] "Time domain: Body Orientation Jolt, StdDev, Antero-Posterior Aspect"             
+[34] "Time domain: Body Acceleration Size, Mean"                                       
+[35] "Time domain: Body Acceleration Size, StdDev"                                     
+[36] "Time domain:  Gravity component of Acceleration Size, Mean"                      
+[37] "Time domain:  Gravity component of Acceleration Size, StdDev"                    
+[38] "Time domain: Body Acceleration Jolt Size, Mean"                                  
+[39] "Time domain: Body Acceleration Jolt Size, StdDev"                                
+[40] "Time domain: Body Orientation Size, Mean"                                        
+[41] "Time domain: Body Orientation Size, StdDev"                                      
+[42] "Time domain: Body Orientation Jolt Size, Mean"                                   
+[43] "Time domain: Body Orientation Jolt Size, StdDev"                                 
+[44] "Frequency domain: Body Acceleration, Mean, Lateral Aspect"                       
+[45] "Frequency domain: Body Acceleration, Mean, Vertical Aspect"                      
+[46] "Frequency domain: Body Acceleration, Mean, Antero-Posterior Aspect"              
+[47] "Frequency domain: Body Acceleration, StdDev, Lateral Aspect"                     
+[48] "Frequency domain: Body Acceleration, StdDev, Vertical Aspect"                    
+[49] "Frequency domain: Body Acceleration, StdDev, Antero-Posterior Aspect"            
+[50] "Frequency domain: Body Acceleration Jolt, Mean, Lateral Aspect"                  
+[51] "Frequency domain: Body Acceleration Jolt, Mean, Vertical Aspect"                 
+[52] "Frequency domain: Body Acceleration Jolt, Mean, Antero-Posterior Aspect"         
+[53] "Frequency domain: Body Acceleration Jolt, StdDev, Lateral Aspect"                
+[54] "Frequency domain: Body Acceleration Jolt, StdDev, Vertical Aspect"               
+[55] "Frequency domain: Body Acceleration Jolt, StdDev, Antero-Posterior Aspect"       
+[56] "Frequency domain: Body Orientation, Mean, Lateral Aspect"                        
+[57] "Frequency domain: Body Orientation, Mean, Vertical Aspect"                       
+[58] "Frequency domain: Body Orientation, Mean, Antero-Posterior Aspect"               
+[59] "Frequency domain: Body Orientation, StdDev, Lateral Aspect"                      
+[60] "Frequency domain: Body Orientation, StdDev, Vertical Aspect"                     
+[61] "Frequency domain: Body Orientation, StdDev, Antero-Posterior Aspect"             
+[62] "Frequency domain: Body Acceleration Size, Mean"                                  
+[63] "Frequency domain: Body Acceleration Size, StdDev"                                
+[64] "Frequency domain:  Body Acceleration Jolt Size, Mean"                            
+[65] "Frequency domain:  Body Acceleration Jolt Size, StdDev"                          
+[66] "Frequency domain:  Body Orientation Size, Mean"                                  
+[67] "Frequency domain:  Body Orientation Size, StdDev"                                
+[68] "Frequency domain:  Body Orientation Jolt Size, Mean"                             
+[69] "Frequency domain:  Body Orientation Jolt Size, StdDev"
+-----
